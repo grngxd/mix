@@ -1,5 +1,12 @@
 {
-  "name": "wem",
+  "name": "@grng/mix",
+  "version": "0.0.4",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "mix": "index.ts"
+  },
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
