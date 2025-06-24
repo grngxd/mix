@@ -11,16 +11,18 @@ export const registerSyncCommand = (p: Command) => {
     p
         .command("sync")
         .action(() => {
-            const getMixFiles = (): { name: string, content: MixFile}[] => {
-                const files = readdirSync(isDev ? process.cwd() : homedir(), { withFileTypes: true })
-                .filter((dirent) => dirent.isFile() && dirent.name.endsWith("mix.hjson") && !dirent.name.startsWith("_"))
-                .map((dirent) => ({
-                    name: dirent.name,
-                    content: h.parse(readFileSync(dirent.name, "utf-8"))
-                }));
+            const mixDir = isDev
+                ? process.cwd()
+                : path.join(homedir(), ".mix");
 
-                return files
-            }
+            const getMixFiles = (): { name: string, content: MixFile }[] => {
+                return readdirSync(mixDir, { withFileTypes: true })
+                    .filter(d => d.isFile() && d.name.endsWith("mix.hjson") && !d.name.startsWith("_"))
+                    .map(d => ({
+                        name: d.name,
+                        content: h.parse(readFileSync(path.join(mixDir, d.name), "utf-8"))
+                    }));
+            };
 
             const mergeMixFiles = (files: MixFile[]): MixFile => {
                 const merged: MixFile = {};
@@ -50,9 +52,10 @@ export const registerSyncCommand = (p: Command) => {
             }
 
             const getLockFile = (): MixLockFile => {
-                const mixDir = isDev ? "" : path.join(homedir(), ".mix");
-                return h.parse(readFileSync(path.join(mixDir, "mix.lock"), "utf-8"));
-            }
+                return h.parse(
+                    readFileSync(path.join(mixDir, "mix.lock"), "utf-8")
+                );
+            };
 
             const diff = (file: MixFile, lock: MixLockFile) => {
                 const toInstall: MixPackage[] = [];
