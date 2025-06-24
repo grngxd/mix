@@ -122,7 +122,7 @@ const diff = (mix: MixFile, lock: MixLockFile) => {
 }
 
 const installPackage = async (lock: MixLockFile, id: string, version: string) => {
-    await exec(`winget install --id ${id} --version ${version} --exact --silent --force --disable-interactivity`, (error, _, e) => {
+    await exec(`winget install --id ${id} --version ${version} --exact --force`, (error, _, e) => {
         if (error) {
             console.error(`Error installing package ${id}@${version}:`, error);
             return;
@@ -143,7 +143,7 @@ const installPackage = async (lock: MixLockFile, id: string, version: string) =>
 };
 
 const removePackage = async (lock: MixLockFile, id: string, version: string) => {
-    exec(`winget remove --id ${id} --version ${version} --silent`, (error, _, e) => {
+    exec(`winget remove --id ${id} --version ${version}`, (error, _, stderr) => {
         if (error) {
             console.error(`Error removing package ${id}@${version}:`, error);
             return;
@@ -157,7 +157,7 @@ const removePackage = async (lock: MixLockFile, id: string, version: string) => 
         } else {
             console.warn(`Package ${id}@${version} not found in lock file.`);
         }
-        
-        e && console.error(e);
+
+        stderr && console.error(stderr);
     });
 }
