@@ -126,7 +126,7 @@ export const registerSyncCommand = (p: Command) => {
                     }
 
                     lock.push(l);
-                    const content = h.stringify(lock, { space: 2 });
+                    const content = h.stringify(lock);
                     writeFileSync("mix.lock", content, "utf-8");
                 });
             }
@@ -147,9 +147,40 @@ export const registerSyncCommand = (p: Command) => {
                     const index = lock.findIndex(l => l.id === pkg.id);
                     if (index !== -1) {
                         lock.splice(index, 1);
-                        const content = h.stringify(lock, { space: 2 });
+                        const content = h.stringify(lock);
                         writeFileSync("mix.lock", content, "utf-8");
                     }
+                });
+            }
+
+            for (const pkg of updating) {
+                console.log(`Updating ${pkg.id} to version ${pkg.version}`);
+                exec(`winget upgrade ${pkg.id} --version ${pkg.version}`, (error, stdout, stderr) => {
+                    if (error) {
+                        console.error(`Error updating ${pkg.id}: ${error.message}`);
+                        return;
+                    }
+                    if (stderr) {
+                        console.error(`Error output for ${pkg.id}: ${stderr}`);
+                        return;
+                    }
+                    console.log(`Updated ${pkg.id} to version ${pkg.version}`);
+
+                    const index = lock.findIndex(l => l.id === pkg.id);
+                    if (index !== -1 && lock[index]) {
+                        lock[index]!.version = pkg.version;
+                    } else {
+                        const l: MixLockPackage = {
+                            id: pkg.id,
+                            version: pkg.version,
+                            config: []
+                        };
+
+                        lock.push(l);
+                    }
+
+                    const content = h.stringify(lock);
+                    writeFileSync("mix.lock", content, "utf-8");
                 });
             }
         });
