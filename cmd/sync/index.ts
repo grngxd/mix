@@ -143,7 +143,7 @@ const installPackage = async (lock: MixLockFile, id: string, version: string) =>
 };
 
 const removePackage = async (lock: MixLockFile, id: string, version: string) => {
-    exec(`winget remove --id ${id} --version ${version} --exact --silent --force`, (error, _, e) => {
+    exec(`winget remove --id ${id} --version ${version} --silent`, (error, _, e) => {
         if (error) {
             console.error(`Error removing package ${id}@${version}:`, error);
             return;
