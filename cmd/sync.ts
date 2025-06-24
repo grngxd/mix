@@ -12,7 +12,7 @@ export const registerSyncCommand = (p: Command) => {
         .command("sync")
         .action(() => {
             const getMixFiles = (): { name: string, content: MixFile}[] => {
-                const files = readdirSync(process.cwd(), { withFileTypes: true })
+                const files = readdirSync(isDev ? process.cwd() : homedir(), { withFileTypes: true })
                 .filter((dirent) => dirent.isFile() && dirent.name.endsWith("mix.hjson") && !dirent.name.startsWith("_"))
                 .map((dirent) => ({
                     name: dirent.name,
@@ -50,7 +50,8 @@ export const registerSyncCommand = (p: Command) => {
             }
 
             const getLockFile = (): MixLockFile => {
-                return h.parse(readFileSync("mix.lock", "utf-8"));
+                const mixDir = isDev ? "" : path.join(homedir(), ".mix");
+                return h.parse(readFileSync(path.join(mixDir, "mix.lock"), "utf-8"));
             }
 
             const diff = (file: MixFile, lock: MixLockFile) => {
