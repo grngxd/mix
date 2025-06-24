@@ -11,7 +11,7 @@
 - [winget](https://github.com/microsoft/winget-cli)
 
 ## usage
-- `bun i mix -g`, then `mix <command> <args>`
-  - OR `bunx mix <command> <args>`
+- `bun i @grng/mix -g`, then `mix <command> <args>`
+  - OR `bunx @grng/mix <command> <args>`
 - `mix init` to create your mixfile & lock file
 - `mix sync` to install/remove/update/config packages
