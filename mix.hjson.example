@@ -1,0 +1,21 @@
+default: {
+    packages: [
+        {
+            id: "wez.wezterm"
+            version: "20240203-110809-5046fc22"
+            config: [
+                {
+                    type: "raw"
+                    path: "~/.wezterm.lua"
+                    data:
+                        '''
+                        local wezterm = require 'wezterm'
+                        local config = {}
+                        config.color_scheme = 'Batman'
+                        return config
+                        '''
+                }
+            ]
+        }
+    ]
+}
