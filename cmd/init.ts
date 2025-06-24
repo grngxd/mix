@@ -1,5 +1,5 @@
 import type { Command } from "commander";
-import { readdirSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from "fs";
 import * as h from "hjson";
 import { homedir } from "os";
 import path from "path";
@@ -15,9 +15,12 @@ export const registerInitCommand = (p: Command) => {
                 console.error("Error: Mix project already initialized. Please remove existing .mix.hjson or mix.lock files.");
                 process.exit(1);
             }
-
-            // userhomedir/.mix/mix.hjson
+            
             const mixDir = isDev ? "" : path.join(homedir(), ".mix");
+            if (mixDir && !existsSync(mixDir)) {
+                mkdirSync(mixDir, { recursive: true });
+            }
+            
             writeFileSync(path.join(mixDir, "mix.hjson"), h.stringify({
                 default: {
                     packages: []
