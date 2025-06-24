@@ -4,9 +4,9 @@ import { registerCommands } from './cmd';
 const program = new Command();
 
 program
-  .name('string-util')
-  .description('CLI to some JavaScript string utilities')
-  .version('0.8.0');
+  .name('mix')
+  .description('a declerative file-based package manager for windows.')
+  .version('0.0.1', '-v, --version', 'output the current version');
 
 registerCommands(program);
 
